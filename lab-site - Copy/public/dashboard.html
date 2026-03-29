@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Lab Portal</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .dashboard-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 2rem;
+      }
+
+      .dashboard-header {
+        background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .dashboard-header h1 {
+        margin: 0 0 0.5rem 0;
+        font-size: 2rem;
+      }
+
+      .user-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .user-details {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+      }
+
+      .user-stat {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 1rem;
+        border-radius: 6px;
+        backdrop-filter: blur(10px);
+      }
+
+      .user-stat strong {
+        display: block;
+        font-size: 0.9rem;
+        opacity: 0.9;
+      }
+
+      .user-stat span {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+
+      .logout-btn {
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      .logout-btn:hover {
+        background: #dc2626;
+      }
+
+      .dashboard-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+      }
+
+      .card {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid #1e3a8a;
+      }
+
+      .card h2 {
+        color: #1e3a8a;
+        margin-top: 0;
+      }
+
+      .card p {
+        color: #666;
+        line-height: 1.6;
+      }
+
+      .role-student {
+        border-left-color: #10b981;
+      }
+
+      .role-professor {
+        border-left-color: #8b5cf6;
+      }
+
+      .role-lab_incharge {
+        border-left-color: #f59e0b;
+      }
+
+      .role-admin {
+        border-left-color: #ef4444;
+      }
+
+      @media (max-width: 768px) {
+        .user-info {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .user-details {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .logout-btn {
+          width: 100%;
+          margin-top: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="logo">
+        <a href="/" style="color: white; text-decoration: none"
+          >Advanced Materials Lab</a
+        >
+      </div>
+      <ul class="nav-links">
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/research.html">Research</a></li>
+        <li><a href="/publications.html">Publications</a></li>
+        <li><a href="/team.html">Team</a></li>
+        <li><a href="/projects.html">Projects</a></li>
+        <li><a href="/contact.html">Contact</a></li>
+        <li><a href="/dashboard.html" class="login-btn">Dashboard</a></li>
+      </ul>
+    </nav>
+
+    <div class="dashboard-container">
+      <div class="dashboard-header">
+        <h1>Welcome to Your Dashboard</h1>
+        <div class="user-info">
+          <div class="user-details">
+            <div class="user-stat">
+              <strong>Username</strong>
+              <span id="user-name">--</span>
+            </div>
+            <div class="user-stat">
+              <strong>Role</strong>
+              <span id="user-role">--</span>
+            </div>
+          </div>
+          <button class="logout-btn" id="logout-btn">Logout</button>
+        </div>
+      </div>
+
+      <div class="dashboard-content">
+        <div class="card" id="role-card">
+          <h2>Your Role Information</h2>
+          <p id="role-message">Loading...</p>
+        </div>
+
+        <div class="card">
+          <h2>Quick Links</h2>
+          <p>
+            <a
+              href="/research.html"
+              style="color: #1e3a8a; text-decoration: none; font-weight: 600"
+              >→ Research Projects</a
+            >
+          </p>
+          <p>
+            <a
+              href="/publications.html"
+              style="color: #1e3a8a; text-decoration: none; font-weight: 600"
+              >→ Publications</a
+            >
+          </p>
+          <p>
+            <a
+              href="/team.html"
+              style="color: #1e3a8a; text-decoration: none; font-weight: 600"
+              >→ Team Members</a
+            >
+          </p>
+          <p>
+            <a
+              href="/contact.html"
+              style="color: #1e3a8a; text-decoration: none; font-weight: 600"
+              >→ Contact Us</a
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Check if user is logged in
+      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+      if (!token || !user.username) {
+        window.location.href = "/login.html";
+      } else {
+        document.getElementById("user-name").textContent = user.username;
+        document.getElementById("user-role").textContent = user.role
+          .replace("_", " ")
+          .toUpperCase();
+
+        const roleCard = document.getElementById("role-card");
+        const roleMsg = document.getElementById("role-message");
+
+        roleCard.className =
+          "card role-" +
+          (user.role === "lab_incharge" ? "lab_incharge" : user.role);
+
+        if (user.role === "student") {
+          roleMsg.innerHTML =
+            "<strong>Student Dashboard</strong><br>Access to course materials, assignments, and lab schedules. Attendance tracking coming soon.";
+        } else if (user.role === "professor") {
+          roleMsg.innerHTML =
+            "<strong>Professor Dashboard</strong><br>Manage courses, view student progress, and research collaboration tools. Grade management coming soon.";
+        } else if (user.role === "lab_incharge") {
+          roleMsg.innerHTML =
+            "<strong>Lab In-Charge Dashboard</strong><br>Manage instruments, approve lab usage requests, and monitor equipment availability.";
+        } else if (user.role === "admin") {
+          roleMsg.innerHTML =
+            "<strong>Administrator Dashboard</strong><br>System administration, user management, and full access to all resources.";
+        }
+      }
+
+      document.getElementById("logout-btn").addEventListener("click", () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "/";
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard — Advanced Materials Lab</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">Advanced Materials Lab<span>Jain University, Bengaluru</span></div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="research.html">Research</a></li>
+      <li><a href="publications.html">Publications</a></li>
+      <li><a href="team.html">Team</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="user-dashboard">
+
+    <div class="welcome-banner">
+      <div>
+        <div class="welcome-name" id="welcome-name">Welcome</div>
+        <div class="welcome-role" id="welcome-role">Loading...</div>
+      </div>
+      <button class="logout-btn" onclick="logout()">Sign Out</button>
+    </div>
+
+    <!-- Attendance Form -->
+    <div class="dashboard-card">
+      <div class="section-label">Daily Attendance</div>
+      <h3>Mark Your Attendance</h3>
+      <p>Please fill out the attendance form each time you visit the lab. Your presence is important for project tracking and lab records.</p>
+      <a href="https://q.me-qr.com/j2d0hbfs" target="_blank" class="form-btn">
+        📋 &nbsp; Open Attendance Form
+      </a>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="dashboard-card">
+      <div class="section-label">Quick Access</div>
+      <h3>Lab Resources</h3>
+      <p>Navigate to key sections of the lab website.</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-top: 8px;">
+        <a href="publications.html" class="prof-link">📄 Publications</a>
+        <a href="projects.html" class="prof-link">🔬 Projects</a>
+        <a href="team.html" class="prof-link">👥 Team</a>
+        <a href="research.html" class="prof-link">⚗️ Research</a>
+        <a href="contact.html" class="prof-link">📧 Contact</a>
+        <a href="about.html" class="prof-link">🎓 About</a>
+      </div>
+    </div>
+
+    <!-- Role-based info -->
+    <div class="dashboard-card" id="role-info" style="display:none;">
+      <div class="section-label">Your Role</div>
+      <div id="role-content"></div>
+    </div>
+
+  </div>
+
+  <footer class="footer">
+    <p>© 2026 Advanced Materials Lab, Jain University &nbsp;|&nbsp; <a href="index.html">Back to Site</a></p>
+  </footer>
+
+  <script>
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+    // Redirect if not logged in
+    if (!token || !user.email) {
+      window.location.href = '/login.html';
+    }
+
+    // Redirect admin to admin dashboard
+    if (user.role === 'admin') {
+      window.location.href = '/admin/dashboard';
+    }
+
+    // Populate welcome
+    document.getElementById('welcome-name').textContent = 'Welcome, ' + (user.name || 'User');
+
+    const roleLabels = {
+      student: 'Student Researcher',
+      professor: 'Professor',
+      lab_incharge: 'Lab In-Charge',
+      admin: 'Administrator'
+    };
+    document.getElementById('welcome-role').textContent = roleLabels[user.role] || user.role;
+
+    // Role-specific messages
+    const roleMessages = {
+      student: {
+        title: 'Student Researcher',
+        message: 'As a student researcher, you have access to lab publications, projects, and team information. Remember to mark your attendance every day you visit the lab.'
+      },
+      professor: {
+        title: 'Professor',
+        message: 'Welcome, Professor. You can browse all lab resources and publications. Please contact the admin if you need any updates made to the lab website.'
+      },
+      lab_incharge: {
+        title: 'Lab In-Charge',
+        message: 'As Lab In-Charge, please ensure all members mark their daily attendance using the form above. You can view all lab activity through the resources below.'
+      }
+    };
+
+    const roleInfo = roleMessages[user.role];
+    if (roleInfo) {
+      document.getElementById('role-info').style.display = 'block';
+      document.getElementById('role-content').innerHTML = `
+        <h3>${roleInfo.title}</h3>
+        <p>${roleInfo.message}</p>
+      `;
+    }
+
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login.html';
+    }
+  </script>
+</body>
+</html>

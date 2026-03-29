@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+      .dashboard {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 20px;
+      }
+      .tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+      .tab-btn {
+        padding: 10px 20px;
+        background: #f4f4f4;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+      .tab-btn.active {
+        background: #007bff;
+        color: white;
+      }
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+      }
+      .section {
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      button.action-btn {
+        padding: 10px 20px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: auto;
+      }
+      button.action-btn:hover {
+        background: #0056b3;
+      }
+      button.delete-btn {
+        background: #dc3545;
+        padding: 5px 10px;
+        font-size: 12px;
+      }
+      .item-list {
+        list-style: none;
+        padding: 0;
+      }
+      .item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+      }
+      label {
+        font-weight: bold;
+        display: block;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="logo">Admin Dashboard</div>
+      <ul class="nav-links">
+        <li><a href="/index.html">View Site</a></li>
+        <li><a href="#" onclick="logout()">Logout</a></li>
+      </ul>
+    </nav>
+
+    <div class="dashboard">
+      <h2>🎛️ Control Panel</h2>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('prof')">
+          About (Professor)
+        </button>
+        <button class="tab-btn" onclick="showTab('team')">Team</button>
+        <button class="tab-btn" onclick="showTab('pubs')">Publications</button>
+        <button class="tab-btn" onclick="showTab('projects')">Projects</button>
+        <button class="tab-btn" onclick="showTab('contact')">Contact</button>
+        <button class="tab-btn" onclick="showTab('users')">Users</button>
+      </div>
+
+      <!-- About Tab -->
+      <div id="prof" class="tab-content active">
+        <div class="section">
+          <h3>✏️ Edit Professor Info</h3>
+          <form id="prof-form">
+            <label>Name</label><input type="text" id="prof-name" required />
+            <label>Title</label><input type="text" id="prof-title" required />
+            <label>Bio</label
+            ><textarea id="prof-bio" rows="4" required></textarea>
+            <label>Email</label><input type="email" id="prof-email" required />
+            <label>Research Areas</label
+            ><input type="text" id="prof-research" required />
+            <label>Google Scholar URL</label
+            ><input type="url" id="prof-scholar" />
+            <button type="submit" class="action-btn">Save</button>
+          </form>
+          <p id="prof-msg"></p>
+        </div>
+      </div>
+
+      <!-- Team Tab -->
+      <div id="team" class="tab-content">
+        <div class="section">
+          <h3>➕ Add Team Member</h3>
+          <form id="team-form">
+            <label>Name</label><input type="text" id="team-name" required />
+            <label>Role</label
+            ><input
+              type="text"
+              id="team-role"
+              placeholder="e.g. PhD Student, Postdoc"
+              required
+            />
+            <label>Bio</label><textarea id="team-bio" rows="3"></textarea>
+            <button type="submit" class="action-btn">Add</button>
+          </form>
+          <p id="team-msg"></p>
+        </div>
+        <div class="section">
+          <h3>👥 Existing Team</h3>
+          <ul id="team-list" class="item-list"></ul>
+        </div>
+      </div>
+
+      <!-- Publications Tab -->
+      <div id="pubs" class="tab-content">
+        <div class="section">
+          <h3>📄 Add Publication</h3>
+          <form id="pub-form">
+            <label>Title</label><input type="text" id="pub-title" required />
+            <label>Authors</label
+            ><input type="text" id="pub-authors" required />
+            <label>Journal</label
+            ><input type="text" id="pub-journal" required /> <label>Year</label
+            ><input type="number" id="pub-year" required /> <label>DOI</label
+            ><input type="text" id="pub-doi" /> <label>Link</label
+            ><input type="url" id="pub-link" />
+            <button type="submit" class="action-btn">Add</button>
+          </form>
+          <p id="pub-msg"></p>
+        </div>
+        <div class="section">
+          <h3>📚 Existing Publications</h3>
+          <ul id="pub-list" class="item-list"></ul>
+        </div>
+      </div>
+
+      <!-- Projects Tab -->
+      <div id="projects" class="tab-content">
+        <div class="section">
+          <h3>🔬 Add Project</h3>
+          <form id="proj-form">
+            <label>Title</label><input type="text" id="proj-title" required />
+            <label>Description</label
+            ><textarea id="proj-desc" rows="3" required></textarea>
+            <label>Status</label>
+            <select id="proj-status">
+              <option value="ongoing">Ongoing</option>
+              <option value="completed">Completed</option>
+            </select>
+            <label>Start Date</label><input type="date" id="proj-start" />
+            <label>End Date</label><input type="date" id="proj-end" />
+            <button type="submit" class="action-btn">Add</button>
+          </form>
+          <p id="proj-msg"></p>
+        </div>
+        <div class="section">
+          <h3>📋 Existing Projects</h3>
+          <ul id="proj-list" class="item-list"></ul>
+        </div>
+      </div>
+
+      <!-- Contact Tab -->
+      <div id="contact" class="tab-content">
+        <div class="section">
+          <h3>📧 Edit Contact Info</h3>
+          <form id="contact-form">
+            <label>Lab Name</label
+            ><input type="text" id="contact-lab" required />
+            <label>Address</label
+            ><input type="text" id="contact-address" required />
+            <label>Email</label
+            ><input type="email" id="contact-email" required />
+            <label>Phone</label><input type="text" id="contact-phone" />
+            <label>Google Form Link</label
+            ><input
+              type="url"
+              id="contact-form-link"
+              placeholder="Paste your Google Form URL here"
+            />
+            <button type="submit" class="action-btn">Save</button>
+          </form>
+          <p id="contact-msg"></p>
+        </div>
+      </div>
+
+      <!-- Users Tab -->
+      <div id="users" class="tab-content">
+        <div class="section">
+          <h3>👤 Create Login ID</h3>
+          <form id="user-form">
+            <label>Name</label><input type="text" id="user-name" required />
+            <label>Email</label><input type="email" id="user-email" required />
+            <label>Password</label
+            ><input type="password" id="user-password" required />
+            <label>Role</label>
+            <select id="user-role">
+              <option value="student">Student</option>
+              <option value="professor">Professor</option>
+              <option value="lab_incharge">Lab In-Charge</option>
+              <option value="admin">Admin</option>
+            </select>
+            <button type="submit" class="action-btn">Create</button>
+          </form>
+          <p id="user-msg"></p>
+        </div>
+        <div class="section">
+          <h3>👥 Existing Users</h3>
+          <ul id="user-list" class="item-list"></ul>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      if (!token || user.role !== "admin") window.location.href = "/login.html";
+
+      function showTab(id) {
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((b) => b.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+        event.target.classList.add("active");
+      }
+
+      // Load professor
+      async function loadProfessor() {
+        const res = await fetch("/api/professor");
+        const d = await res.json();
+        document.getElementById("prof-name").value = d.name;
+        document.getElementById("prof-title").value = d.title;
+        document.getElementById("prof-bio").value = d.bio;
+        document.getElementById("prof-email").value = d.email;
+        document.getElementById("prof-research").value = d.research_areas;
+        document.getElementById("prof-scholar").value = d.google_scholar;
+      }
+
+      document
+        .getElementById("prof-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const res = await fetch("/api/professor", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              name: document.getElementById("prof-name").value,
+              title: document.getElementById("prof-title").value,
+              bio: document.getElementById("prof-bio").value,
+              email: document.getElementById("prof-email").value,
+              research_areas: document.getElementById("prof-research").value,
+              google_scholar: document.getElementById("prof-scholar").value,
+            }),
+          });
+          const msg = document.getElementById("prof-msg");
+          msg.textContent = res.ok ? "✅ Saved!" : "❌ Error";
+          msg.style.color = res.ok ? "green" : "red";
+        });
+
+      // Load team
+      async function loadTeam() {
+        const res = await fetch("/api/team");
+        const list = await res.json();
+        const ul = document.getElementById("team-list");
+        ul.innerHTML = list
+          .map(
+            (m) => `
+        <li class="item">
+          <span><strong>${m.name}</strong> (${m.role})</span>
+          <button class="delete-btn" onclick="deleteItem('team', ${m.id})">Delete</button>
+        </li>`,
+          )
+          .join("");
+      }
+
+      document
+        .getElementById("team-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const res = await fetch("/api/team", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              name: document.getElementById("team-name").value,
+              role: document.getElementById("team-role").value,
+              bio: document.getElementById("team-bio").value,
+            }),
+          });
+          const msg = document.getElementById("team-msg");
+          if (res.ok) {
+            msg.textContent = "✅ Added!";
+            loadTeam();
+          } else msg.textContent = "❌ Error";
+        });
+
+      // Load publications
+      async function loadPubs() {
+        const res = await fetch("/api/publications");
+        const list = await res.json();
+        const ul = document.getElementById("pub-list");
+        ul.innerHTML = list
+          .map(
+            (p) => `
+        <li class="item">
+          <span><strong>${p.title}</strong> (${p.year}) - ${p.journal}</span>
+          <button class="delete-btn" onclick="deleteItem('publications', ${p.id})">Delete</button>
+        </li>`,
+          )
+          .join("");
+      }
+
+      document
+        .getElementById("pub-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const res = await fetch("/api/publications", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              title: document.getElementById("pub-title").value,
+              authors: document.getElementById("pub-authors").value,
+              journal: document.getElementById("pub-journal").value,
+              year: document.getElementById("pub-year").value,
+              doi: document.getElementById("pub-doi").value,
+              link: document.getElementById("pub-link").value,
+            }),
+          });
+          const msg = document.getElementById("pub-msg");
+          if (res.ok) {
+            msg.textContent = "✅ Added!";
+            loadPubs();
+          } else msg.textContent = "❌ Error";
+        });
+
+      // Load projects
+      async function loadProjects() {
+        const res = await fetch("/api/projects");
+        const list = await res.json();
+        const ul = document.getElementById("proj-list");
+        ul.innerHTML = list
+          .map(
+            (p) => `
+        <li class="item">
+          <span><strong>${p.title}</strong> (${p.status})</span>
+          <button class="delete-btn" onclick="deleteItem('projects', ${p.id})">Delete</button>
+        </li>`,
+          )
+          .join("");
+      }
+
+      document
+        .getElementById("proj-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const res = await fetch("/api/projects", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              title: document.getElementById("proj-title").value,
+              description: document.getElementById("proj-desc").value,
+              status: document.getElementById("proj-status").value,
+              start_date: document.getElementById("proj-start").value,
+              end_date: document.getElementById("proj-end").value,
+            }),
+          });
+          const msg = document.getElementById("proj-msg");
+          if (res.ok) {
+            msg.textContent = "✅ Added!";
+            loadProjects();
+          } else msg.textContent = "❌ Error";
+        });
+
+      // Load contact
+      async function loadContact() {
+        const res = await fetch("/api/contact");
+        const d = await res.json();
+        document.getElementById("contact-lab").value = d.lab_name;
+        document.getElementById("contact-address").value = d.address;
+        document.getElementById("contact-email").value = d.email;
+        document.getElementById("contact-phone").value = d.phone || "";
+        document.getElementById("contact-form-link").value =
+          d.google_form_link || "";
+      }
+
+      document
+        .getElementById("contact-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const res = await fetch("/api/contact", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              lab_name: document.getElementById("contact-lab").value,
+              address: document.getElementById("contact-address").value,
+              email: document.getElementById("contact-email").value,
+              phone: document.getElementById("contact-phone").value,
+              google_form_link:
+                document.getElementById("contact-form-link").value,
+            }),
+          });
+          const msg = document.getElementById("contact-msg");
+          msg.textContent = res.ok ? "✅ Saved!" : "❌ Error";
+          msg.style.color = res.ok ? "green" : "red";
+        });
+
+      // Load users
+      async function loadUsers() {
+        const res = await fetch("/api/users", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const list = await res.json();
+        const ul = document.getElementById("user-list");
+        ul.innerHTML = list
+          .map(
+            (u) => `
+        <li class="item">
+          <span><strong>${u.name}</strong> (${u.email}) - ${u.role}</span>
+          <button class="delete-btn" onclick="deleteItem('users', ${u.id})">Delete</button>
+        </li>`,
+          )
+          .join("");
+      }
+
+      document
+        .getElementById("user-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const res = await fetch("/api/users", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              name: document.getElementById("user-name").value,
+              email: document.getElementById("user-email").value,
+              password: document.getElementById("user-password").value,
+              role: document.getElementById("user-role").value,
+            }),
+          });
+          const msg = document.getElementById("user-msg");
+          if (res.ok) {
+            msg.textContent = "✅ User created!";
+            loadUsers();
+            document.getElementById("user-form").reset();
+          } else {
+            const err = await res.json();
+            msg.textContent = "❌ " + err.error;
+          }
+        });
+
+      async function deleteItem(type, id) {
+        if (!confirm("Delete this?")) return;
+        const res = await fetch(`/api/${type}/${id}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          if (type === "team") loadTeam();
+          else if (type === "publications") loadPubs();
+          else if (type === "projects") loadProjects();
+          else if (type === "users") loadUsers();
+        } else alert("Failed to delete");
+      }
+
+      function logout() {
+        localStorage.clear();
+        window.location.href = "/login.html";
+      }
+
+      loadProfessor();
+      loadTeam();
+      loadPubs();
+      loadProjects();
+      loadContact();
+      loadUsers();
+    </script>
+  </body>
+</html>

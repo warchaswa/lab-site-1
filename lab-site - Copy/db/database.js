@@ -89,7 +89,7 @@ function seedData() {
      VALUES (?, ?, ?, ?, ?, ?)`,
   ).run(
     1,
-    "Advanced Materials Lab",
+    "Nano Lab",
     "Bengaluru, Karnataka, India",
     "garadheeraj.kumar@jainuniversity.ac.in",
     "",

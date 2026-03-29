@@ -11,7 +11,7 @@ function seed() {
     [
       1,
       "Dr. Dheeraj Kumar",
-      "Assistant Professor & Lab Head",
+      "Assistant Professor at International Institute for Aerospace Engineering and Management, Bengaluru, India",
       "Dr. Dheeraj Kumar has 12 years of experience in industry, academia, and research. His research focuses on nanomaterials for biological applications, energy and hydrogen storage, medium entropy alloys, multicomponent functionally graded materials, 3D/4D printing, shape memory alloys, and molecular dynamics simulations.",
       "garadheeraj.kumar@jainuniversity.ac.in",
       "/images/professor.jpg",
